@@ -1,0 +1,6 @@
+# Un titre de film par ligne. Les lignes commençant par # sont ignorées.
+# La recherche se fait en "contient", insensible aux accents/majuscules.
+# Exemples :
+Le Parrain
+2001 : l'Odyssée de l'espace
+Pulp Fiction
