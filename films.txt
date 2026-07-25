@@ -1,6 +1,24 @@
 # Un titre de film par ligne. Les lignes commençant par # sont ignorées.
 # La recherche se fait en "contient", insensible aux accents/majuscules.
 # Exemples :
-Le Parrain
-2001 : l'Odyssée de l'espace
-Pulp Fiction
+Twin Peaks - Fire walk with me
+Contact
+Only lovers left alive
+The French Dispatch
+Her
+Rashomon
+The grand budapest hotel
+Spider
+Scanners
+Huit et demi
+Metropolis
+Le voyeur
+Assaut
+Mad Max : Fury Road
+Suspiria
+L'est de l'Eden
+La dernière tentation du Christ
+La Jetée
+Faux-semblants
+Premier Contact
+Everything everywhere all at once

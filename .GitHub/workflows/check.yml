@@ -24,7 +24,7 @@ jobs:
 
       - name: Lancer la vérification
         env:
-          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          NTFY_TOPIC: ${{ secrets.cinema-notifs }}
         run: python check_films.py
 
       - name: Sauvegarder l'état (séances déjà notifiées)
