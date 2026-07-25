@@ -23,7 +23,7 @@ FILMS_FILE = "films.txt"
 STATE_FILE = "state.json"
 # Noms de départements Allociné à surveiller (voir README pour étendre à toute la France)
 DEPARTEMENTS_A_SURVEILLER = ["Paris", "Hauts-de-Seine", "Seine-Saint-Denis", "Val-de-Marne"]
-JOURS_A_VERIFIER = 3  # aujourd'hui + les 2 jours suivants
+JOURS_A_VERIFIER = 7  # aujourd'hui + les 2 jours suivants
 NTFY_TOPIC = os.environ.get("NTFY_TOPIC")  # défini en secret GitHub Actions
 
 
