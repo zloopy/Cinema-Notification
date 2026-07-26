@@ -134,6 +134,8 @@ def main() -> None:
                     if not match:
                         continue
 
+                    print(f"DEBUG MATCH BRUT: cinema={cinema['name']!r} date={d!r} data={s!r}")
+
                     horaires = (s.get("VF") or []) + (s.get("VO") or [])
                     for h in horaires:
                         key = f"{match}|{cinema['id']}|{h}"
