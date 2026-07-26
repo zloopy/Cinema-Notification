@@ -96,6 +96,9 @@ def main() -> None:
     total_cinemas = 0
     total_seances_vues = 0
     erreurs = 0
+    titres_vus = set()
+    indices_diagnostic = ["bebop", "odyssee", "odyssée"]
+    titres_proches = set()
 
     for dep in cibles:
         try:
@@ -119,6 +122,13 @@ def main() -> None:
                 total_seances_vues += len(seances)
 
                 for s in seances:
+                    titre_brut = s.get("title", "")
+                    titre_norm = normalize(titre_brut)
+                    titres_vus.add(titre_brut)
+                    if any(ind in titre_norm for ind in [normalize(x) for x in indices_diagnostic]):
+                        titres_proches.add(titre_brut)
+
+                for s in seances:
                     titre_norm = normalize(s.get("title", ""))
                     match = next((f for f, fn in zip(films, films_norm) if fn in titre_norm), None)
                     if not match:
@@ -138,6 +148,8 @@ def main() -> None:
                         print(f"Nouvelle séance: {match} — {cinema['name']} — {h}")
 
     save_state(state)
+    print(f"DEBUG: {len(titres_vus)} titres uniques vus au total.")
+    print(f"DEBUG: titres contenant 'bebop'/'odyssee': {sorted(titres_proches)}")
     print(
         f"DEBUG résumé: {total_cinemas} cinémas parcourus, "
         f"{total_seances_vues} lignes de séances vues (tous films confondus), "
