@@ -23,7 +23,7 @@ FILMS_FILE = "films.txt"
 STATE_FILE = "state.json"
 # Noms de départements Allociné à surveiller (voir README pour étendre à toute la France)
 DEPARTEMENTS_A_SURVEILLER = ["Paris", "Hauts-de-Seine", "Seine-Saint-Denis", "Val-de-Marne"]
-JOURS_A_VERIFIER = 7  # aujourd'hui + les 2 jours suivants
+JOURS_A_VERIFIER = 3  # aujourd'hui + les 2 jours suivants
 NTFY_TOPIC = os.environ.get("NTFY_TOPIC")  # défini en secret GitHub Actions
 
 
@@ -78,28 +78,45 @@ def main() -> None:
     state = load_state()
     api = allocineAPI()
 
-    deps = api.get_departements()
+    try:
+        deps = api.get_departements()
+    except Exception as e:
+        print(f"❌ ÉCHEC get_departements(): {e!r}")
+        return
+    print(f"DEBUG: {len(deps)} départements reçus. Exemples: {deps[:5]}")
+
     cibles = [d for d in deps if d["name"] in DEPARTEMENTS_A_SURVEILLER]
+    print(f"DEBUG: départements ciblés trouvés: {cibles}")
     if not cibles:
         print("⚠️  Aucun département correspondant trouvé sur Allociné.")
         return
 
     dates = [(date.today() + timedelta(days=i)).isoformat() for i in range(JOURS_A_VERIFIER)]
     nouvelles = 0
+    total_cinemas = 0
+    total_seances_vues = 0
+    erreurs = 0
 
     for dep in cibles:
         try:
             cinemas = api.get_cinema(dep["id"])
         except Exception as e:
-            print(f"⚠️  Erreur cinémas pour {dep['name']}: {e}")
+            erreurs += 1
+            print(f"❌ Erreur cinémas pour {dep['name']}: {e!r}")
             continue
+        print(f"DEBUG: {len(cinemas)} cinémas trouvés pour {dep['name']}")
+        total_cinemas += len(cinemas)
 
         for cinema in cinemas:
             for d in dates:
                 try:
                     seances = api.get_showtime(cinema["id"], d)
-                except Exception:
+                except Exception as e:
+                    erreurs += 1
+                    if erreurs <= 5:
+                        print(f"❌ Erreur séances pour {cinema['name']} ({d}): {e!r}")
                     continue
+                total_seances_vues += len(seances)
 
                 for s in seances:
                     titre_norm = normalize(s.get("title", ""))
@@ -121,6 +138,11 @@ def main() -> None:
                         print(f"Nouvelle séance: {match} — {cinema['name']} — {h}")
 
     save_state(state)
+    print(
+        f"DEBUG résumé: {total_cinemas} cinémas parcourus, "
+        f"{total_seances_vues} lignes de séances vues (tous films confondus), "
+        f"{erreurs} erreur(s) de requête."
+    )
     print(f"Terminé. {nouvelles} nouvelle(s) séance(s) notifiée(s).")
 
 
